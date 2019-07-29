@@ -3,7 +3,7 @@
 # Copyright 2017 SchedMD LLC.
 # Modified for use with the Slurm Resource Manager.
 #
-# Copyright 2015 Google Inc. All rights reserved.
+# Copyright 2019 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,7 +44,9 @@ VPC_SUBNET   = '@VPC_SUBNET@'
 DISK_SIZE_GB = '@DISK_SIZE_GB@'
 DISK_TYPE    = '@DISK_TYPE@'
 
-LABELS       = @LABELS@
+COMPUTE_IMAGE = '@COMPUTE_IMAGE@'
+
+LABELS       = '@LABELS@'
 
 NETWORK_TYPE = 'subnetwork'
 NETWORK      = "projects/{}/regions/{}/subnetworks/{}-slurm-subnet".format(PROJECT, REGION, CLUSTER_NAME)
@@ -118,13 +120,13 @@ def create_instance(compute, project, zone, instance_type, instance_name,
         'value': shutdown_script
     })
 
-    if not have_compute_img:
-        startup_script = open(
-            '/apps/slurm/scripts/startup-script.py', 'r').read()
-        config['metadata']['items'].append({
-            'key': 'startup-script',
-            'value': startup_script
-        })
+    #if not have_compute_img:
+    startup_script = open(
+        '/apps/slurm/scripts/startup-script.py', 'r').read()
+    config['metadata']['items'].append({
+        'key': 'startup-script',
+        'value': startup_script
+    })
 
     if GPU_TYPE:
         accel_type = ("https://www.googleapis.com/compute/v1/"
@@ -233,20 +235,22 @@ def main(arg_nodes):
     node_list = nodes_str.splitlines()
 
     have_compute_img = False
-    try:
-        image_response = compute.images().getFromFamily(
-            project = PROJECT,
-            family = CLUSTER_NAME + "-compute-image-family").execute()
-        if image_response['status'] != "READY":
-            logging.debug("image not ready, using the startup script")
-            raise Exception("image not ready")
-        source_disk_image = image_response['selfLink']
-        have_compute_img = True
-    except:
-        image_response = compute.images().getFromFamily(
-            project='centos-cloud', family='centos-7').execute()
-        source_disk_image = image_response['selfLink']
-
+    #try:
+    #    image_response = compute.images().getFromFamily(
+    #        project = PROJECT,
+    #        family = CLUSTER_NAME + "-compute-image-family").execute()
+    #    if image_response['status'] != "READY":
+    #        logging.debug("image not ready, using the startup script")
+    #        raise Exception("image not ready")
+    #    source_disk_image = image_response['selfLink']
+    #    have_compute_img = True
+    #except:
+    #/    source_disk_image = "https://www.googleapis.com/compute/v1/{}".format(COMPUTE_IMAGE)
+    source_disk_image = "https://www.googleapis.com/compute/v1/{}".format(COMPUTE_IMAGE)
+        #if COMPUTE_IMAGE:
+        #    source_disk_image = "https://www.googleapis.com/compute/v1/{}".format(COMPUTE_IMAGE)
+        #else:
+        #    image_response = compute.images().getFromFamily(
     while True:
         add_instances(compute, source_disk_image, have_compute_img, node_list)
         if not len(retry_list):
