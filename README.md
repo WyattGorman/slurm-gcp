@@ -71,7 +71,7 @@ Steps:
        controller_machine_type : n1-standard-2
        compute_machine_type    : n1-standard-2
        login_machine_type      : n1-standard-2
-       #login_node_count        : 0
+       login_node_count        : 1
 
        # Optional compute configuration fields
        #cpu_platform               : Intel Skylake
@@ -97,8 +97,13 @@ Steps:
        #     key1 : value1
        #     key2 : value2
 
-       #nfs_apps_server            :
-       #nfs_home_server            :
+       #network_storage:
+       #     - server_ip           :
+       #       remote_mount        :
+       #       fs_type             :
+       #       local_mount         :
+       #       mount_options       :
+
        #controller_secondary_disk          : True
        #controller_secondary_disk_type     : pd-standard
        #controller_secondary_disk_size_gb  : 300
@@ -335,9 +340,6 @@ following are the steps to do this.
    # resume.py, suspend.py
    PROJECT      = '<project2 id>'
    ZONE         = '<project2 zone>'
-
-   # resume.py
-   REGION       = '<project2 region>'
 
    # Set to True so that it can install packages from the other network
    EXTERNAL_IP  = True
