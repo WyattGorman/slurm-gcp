@@ -47,7 +47,6 @@ required:
 optional:
 - compute_disk_type
 - compute_disk_size_gb
-- compute_image
 - compute_labels
 - controller_disk_type
 - controller_disk_size_gb
@@ -64,12 +63,14 @@ optional:
 - login_labels
 - login_node_count
 - munge_key
-- network_storage
 - preemptible_bursting
-- shared_vpc_host_project
+- shared_vpc_host_proj
 - suspend_time
 - vpc_net
 - vpc_subnet
+- compute_image
+- controller_image
+- login_image
 
 properties:
   cidr:
@@ -96,11 +97,6 @@ properties:
     minimum     : 10
     maximum     : 2000
     description : Size of disk for compute nodes.
-
-  compute_image:
-    type        : string
-    default     : projects/centos-cloud/global/images/family/centos-7
-    description : Image to use as a source image for the compute image.
 
   compute_labels:
     type        : object
@@ -229,47 +225,6 @@ properties:
                   (e.g "date +%s | sha512sum | cut -d' ' -f1"). If not specified
                   then a random key will be generated at deployment creation.
 
-  network_storage:
-    type        : array
-    default     : []
-    description : An array of network attached storage mounts to be configured on the instances.
-    items:
-      type: object
-      required :
-      - server_ip
-      - remote_mount
-      - local_mount
-      - fs_type
-      optional :
-      - mount_options
-      properties :
-
-        server_ip:
-          type          : string
-          description   : IP of the remote file server.
-
-        remote_mount:
-          type          : string
-          description   : Remote mount directory of the remote file server.
-
-        local_mount:
-          type          : string
-          description   : Local mount directory on the instances.
-
-        fs_type:
-          enum          :
-                        - nfs
-                        - cifs
-                        - lustre
-                        - gcsfuse
-          description   : Filesystem type of the remote file server. Supported currently are NFS, CIFS, and Lustre.
-
-        mount_options:
-          type          : string
-          default       : defaults,_netdev
-          description   : Filesystem mount options for this mount. Defaults are
-                          defaults and _netdev.
-
   preemptible_bursting:
     type        : boolean
     default     : False
@@ -321,3 +276,59 @@ properties:
   zone:
     type        : string
     description : Zone to run the instances in based on Region.
+
+  compute_image:
+    type        : string
+    default     : projects/centos-cloud/global/images/family/centos-7
+    description : Image to use as a source image for the compute image.
+
+  controller_image:
+    type        : string
+    default     : projects/centos-cloud/global/images/family/centos-7
+    description : Image to use as a source image for the controller instance.
+
+  login_image:
+    type        : string
+    default     : projects/centos-cloud/global/images/family/centos-7
+    description : Image to use as a source image for the login instance.
+
+  network_storage:
+    type        : array
+    default     : []
+    description : An array of network attached storage mounts to be configured on the instances.
+    items:
+      type: object
+      required :
+      - server_ip
+      - remote_mount
+      - local_mount
+      - fs_type
+      optional :
+      - mount_options
+      properties :
+
+        server_ip:
+          type          : string
+          default       : blank
+          description   : IP of the remote file server.
+
+        remote_mount:
+          type          : string
+          description   : Remote mount directory of the remote file server.
+
+        local_mount:
+          type          : string
+          description   : Local mount directory on the instances.
+
+        fs_type:
+          enum          :
+                        - nfs
+                        - cifs
+                        - lustre
+                        - gcsfuse
+          description   : Filesystem type of the remote file server. Supported currently are NFS, CIFS, and Lustre.
+
+        mount_options:
+          type          : string
+          default       : defaults,_netdev
+          description   : Filesystem mount options for this mount. Defaults are defaults and _netdev.

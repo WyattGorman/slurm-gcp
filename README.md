@@ -340,9 +340,6 @@ following are the steps to do this.
    PROJECT      = '<project2 id>'
    ZONE         = '<project2 zone>'
 
-   # resume.py
-   REGION       = '<project2 region>'
-
    # Set to True so that it can install packages from the other network
    EXTERNAL_IP  = True
    ```
