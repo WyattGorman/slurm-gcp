@@ -246,7 +246,7 @@ def main(arg_nodes):
     #    have_compute_img = True
     #except:
     #/    source_disk_image = "https://www.googleapis.com/compute/v1/{}".format(COMPUTE_IMAGE)
-    source_disk_image = "https://www.googleapis.com/compute/v1/{}".format(COMPUTE_IMAGE)
+    source_disk_image = "https://www.googleapis.com/compute/v1/{}/global/images/{}".format(PROJECT,COMPUTE_IMAGE)
         #if COMPUTE_IMAGE:
         #    source_disk_image = "https://www.googleapis.com/compute/v1/{}".format(COMPUTE_IMAGE)
         #else:
