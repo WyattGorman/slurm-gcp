@@ -1317,8 +1317,9 @@ def main():
 
     else: # login nodes
         print "ww Installing Login"
-        while "/apps" not in subprocess.check_output(["mount"]):
-            mount_nfs_vols()
+        mount_nfs_vols()
+        #while "/apps" not in subprocess.check_output(["mount"]):
+        #    mount_nfs_vols()
         start_munge()
 
         try:
